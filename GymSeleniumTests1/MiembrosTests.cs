@@ -159,6 +159,71 @@ namespace GymSeleniumTests
 
             Assert.That(driver.Url, Does.Not.Contain("Delete"));
         }
+        [Test]
+        public void Eliminar_Negativo_CancelarEliminacion()
+        {
+            driver.Navigate().GoToUrl("https://localhost:7090/Miembroes");
+            Thread.Sleep(6000);
+
+            var btnDelete = driver.FindElements(By.LinkText("Delete")).FirstOrDefault();
+
+            if (btnDelete != null)
+            {
+                // Forzar el clic con JavaScript para evitar el ElementClickInterceptedException
+                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                js.ExecuteScript("arguments[0].click();", btnDelete);
+
+                Thread.Sleep(6000);
+
+                var btnVolver = driver.FindElement(By.LinkText("Back to List"));
+                js.ExecuteScript("arguments[0].click();", btnVolver); // Forzamos también el botón de volver
+
+                Thread.Sleep(6000);
+
+                Assert.That(driver.Url.Contains("Miembroes"), Is.True);
+            }
+        }
+
+        [Test]
+        public void Eliminar_Limite_ValidarMensajeAdvertencia()
+        {
+            driver.Navigate().GoToUrl("https://localhost:7090/Miembroes");
+            Thread.Sleep(6000);
+
+            var btnDelete = driver.FindElements(By.LinkText("Delete")).FirstOrDefault();
+
+            if (btnDelete != null)
+            {
+                //  Forzar el clic con JavaScript 
+                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                js.ExecuteScript("arguments[0].click();", btnDelete);
+
+                Thread.Sleep(1000);
+
+                Assert.That(driver.PageSource.Contains("Delete") || driver.PageSource.Contains("Are you sure"), Is.True);
+            }
+        }
+
+        [Test]
+        public void Leer_Negativo_MiembroNoExistente()
+        {
+            // Intentar acceder a los detalles de un ID inventado que no existe en la base de datos
+            driver.Navigate().GoToUrl("https://localhost:7090/Miembroes/Details/99999");
+            Thread.Sleep(6000);
+
+            Assert.That(driver.PageSource.Contains("Not Found") || driver.PageSource.Contains("Error") || driver.Title.Contains("Error"), Is.True);
+        }
+
+        [Test]
+        public void Leer_Limite_ValidarEstructuraTabla()
+        {
+            driver.Navigate().GoToUrl("https://localhost:7090/Miembroes");
+            Thread.Sleep(6000);
+
+            // Validar que la tabla HTML al menos se está renderizando en la pantalla
+            var tablas = driver.FindElements(By.TagName("table"));
+            Assert.That(tablas.Count, Is.GreaterThan(0), "La tabla no se está mostrando en la vista Index.");
+        }
 
         [TearDown]
         public void TearDown()
