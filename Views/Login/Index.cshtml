@@ -1,0 +1,34 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Sistema de Gimnasio</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body class="bg-light d-flex align-items-center justify-content-center" style="height: 100vh;">
+    <div class="card shadow p-4" style="width: 25rem;">
+        <h3 class="text-center mb-4">Acceso al Sistema</h3>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">@ViewBag.Error</div>
+        }
+
+        <form asp-action="Ingresar" method="post">
+            <div class="mb-3">
+                <label class="form-label">Usuario</label>
+                <input type="text" name="usuario" id="txtUsuario" class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Contraseña</label>
+                <input type="password" name="clave" id="txtClave" class="form-control" required />
+            </div>
+            <button type="submit" id="btnLogin" class="btn btn-primary w-100">Iniciar Sesión</button>
+        </form>
+    </div>
+</body>
+</html>
